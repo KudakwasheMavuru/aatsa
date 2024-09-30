@@ -1,0 +1,46 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const newsContainer = document.getElementById("news-container");
+
+    // Replace with a real aviation news API endpoint
+    const apiUrl = 'https://newsapi.org/v2/everything?q=aviation&apiKey=YOUR_API_KEY';
+
+    // Fetch top 10 news articles
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const articles = data.articles.slice(0, 10);
+            displayNews(articles);
+        })
+        .catch(error => {
+            console.error("Error fetching news:", error);
+            newsContainer.innerHTML = "<p>Unable to load news at this time.</p>";
+        });
+
+    // Function to display news articles
+    function displayNews(articles) {
+        articles.forEach(article => {
+            const newsItem = document.createElement("div");
+            newsItem.classList.add("news-item");
+
+            const image = document.createElement("img");
+            image.src = article.urlToImage || "default-image.jpg"; // Provide a fallback image if none available
+
+            const title = document.createElement("h3");
+            title.textContent = article.title;
+
+            const date = document.createElement("p");
+            const postDate = new Date(article.publishedAt);
+            date.textContent = `Published on: ${postDate.toDateString()}`;
+
+            const link = document.createElement("a");
+            link.href = article.url;
+            link.target = "_blank";
+            link.appendChild(image);
+            link.appendChild(title);
+
+            newsItem.appendChild(link);
+            newsItem.appendChild(date);
+            newsContainer.appendChild(newsItem);
+        });
+    }
+});
